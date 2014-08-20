@@ -7,7 +7,6 @@ var modulex = require('modulex');
 var compiler = require('./lib/compiler');
 var gutil = require('gulp-util');
 var PLUGIN_NAME = require('./package.json').name;
-var util = require('./lib/util');
 
 module.exports = function (config) {
     var packages = config.packages;
@@ -20,7 +19,7 @@ module.exports = function (config) {
         }
         var codes = {};
         var requires = {};
-        var main = util.findModName(packages, file.path);
+        var main = compiler.findModName(packages, file.path);
         compiler.compileModule(main, code, codes, requires);
         var mods = [];
         var header = ['/*', 'combined modules:'];
