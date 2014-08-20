@@ -1,5 +1,6 @@
 /**
  * compile, concat and extra dependencies of modulex modules
+ * @author yiminghe@gmail.com
  */
 var through = require('through2');
 var modulex = require('modulex');
