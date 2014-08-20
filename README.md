@@ -1,6 +1,6 @@
 # gulp-modulex
 
-compile, concat and extra dependencies of modulex modules
+compile, concat and generate dependencies of modulex modules
 
 ## example
 
