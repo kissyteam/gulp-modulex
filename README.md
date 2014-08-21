@@ -8,11 +8,14 @@ compile, concat and generate dependencies of modulex modules
 gulp.task('default', function () {
     gulp.src('./lib/a.js')
         .pipe(gulpModulex({
-            packages: {
-                lib: {
-                    base: path.resolve(process.cwd(), './lib')
+            modulex:{
+                packages: {
+                    lib: {
+                        base: path.resolve(process.cwd(), './lib')
+                    }
                 }
-            }
+            },
+            excludeModules:[]
         }))
         .pipe(gulp.dest('./build'));
 });

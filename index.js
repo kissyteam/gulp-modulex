@@ -9,8 +9,14 @@ var gutil = require('gulp-util');
 var PLUGIN_NAME = require('./package.json').name;
 
 module.exports = function (config) {
-    var packages = config.packages;
-    modulex.config('packages', packages);
+    var modulexConfig = config.modulex;
+    var packages = modulexConfig.packages;
+    var excludeModules = config.excludeModules || [];
+    var excludesMap = {};
+    excludeModules.forEach(function (m) {
+        excludesMap[m] = 1;
+    });
+    modulex.config(modulexConfig);
 
     return through.obj(function (file, encoding, callback) {
         var code = file.contents.toString(encoding);
@@ -20,7 +26,7 @@ module.exports = function (config) {
         var codes = {};
         var requires = {};
         var main = compiler.findModName(packages, file.path);
-        compiler.compileModule(main, code, codes, requires);
+        compiler.compileModule(main, code, codes, requires, excludesMap);
         var mods = [];
         var header = ['/*', 'combined modules:'];
         var codeContent = [];
