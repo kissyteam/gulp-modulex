@@ -17,7 +17,10 @@ module.exports = function (config) {
         excludesMap[m] = 1;
     });
     modulex.config(modulexConfig);
-
+    var genDeps = true;
+    if (config.genDeps === false) {
+        genDeps = false;
+    }
     return through.obj(function (file, encoding, callback) {
         var code = file.contents.toString(encoding);
         if (!file.isBuffer()) {
@@ -43,18 +46,20 @@ module.exports = function (config) {
         concatFile.contents = new Buffer(codeContent.join('\n'), encoding);
         concatFile.path = file.path.slice(0, -3) + '-debug.js';
         this.push(concatFile);
-        var optimizedRequires = compiler.optimizeRequires(requires);
-        if (optimizedRequires.length) {
-            requires = {};
-            requires[main] = optimizedRequires;
-            var depsJsonFile = file.clone();
-            depsJsonFile.contents = new Buffer(JSON.stringify(requires), encoding);
-            depsJsonFile.path = file.path.slice(0, -3) + '-deps.json';
-            this.push(depsJsonFile);
-            var depsFile = file.clone();
-            depsFile.contents = new Buffer('modulex.config("requires",' + JSON.stringify(requires) + ');', encoding);
-            depsFile.path = file.path.slice(0, -3) + '-deps.js';
-            this.push(depsFile);
+        if (genDeps) {
+            var optimizedRequires = compiler.optimizeRequires(requires);
+            if (optimizedRequires.length) {
+                requires = {};
+                requires[main] = optimizedRequires;
+                var depsJsonFile = file.clone();
+                depsJsonFile.contents = new Buffer(JSON.stringify(requires), encoding);
+                depsJsonFile.path = file.path.slice(0, -3) + '-deps.json';
+                this.push(depsJsonFile);
+                var depsFile = file.clone();
+                depsFile.contents = new Buffer('modulex.config("requires",' + JSON.stringify(requires) + ');', encoding);
+                depsFile.path = file.path.slice(0, -3) + '-deps.js';
+                this.push(depsFile);
+            }
         }
         callback();
     });
