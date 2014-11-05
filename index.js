@@ -56,7 +56,7 @@ module.exports = function (config) {
                 depsJsonFile.path = file.path.slice(0, -3) + '-deps.json';
                 this.push(depsJsonFile);
                 var depsFile = file.clone();
-                depsFile.contents = new Buffer('modulex.config("requires",' + JSON.stringify(requires) + ');', encoding);
+                depsFile.contents = new Buffer('require.config("requires",' + JSON.stringify(requires) + ');', encoding);
                 depsFile.path = file.path.slice(0, -3) + '-deps.js';
                 this.push(depsFile);
             }
